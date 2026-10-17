@@ -1,0 +1,61 @@
+Phase 1: Download & Configure Apache Kafka (KRaft Mode)
+Download & Extract Kafka
+
+Download Apache Kafka (latest binary release) and extract it to C:\kafka.
+
+Open Command Prompt & Verify Java
+Open a Command Prompt window and set/verify your Java 27 home environment:
+
+DOS
+set JAVA_HOME=C:\Program Files\Java\jdk-27
+java -version
+Generate a Cluster ID
+Navigate to your Kafka directory and generate a unique storage ID:
+
+DOS
+cd C:\kafka
+bin\windows\kafka-storage.bat random-uuid
+(Copy the generated UUID string, e.g., EFYKVx0WSsKps8Qm7R7JAA)
+
+Format Storage Logs (Standalone Mode)
+Format your local log directory using the standalone configuration flag:
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\server.properties --standalone
+Start the Kafka Broker
+Launch the Kafka server directly via Java to bypass Windows wmic batch script limitations:
+
+DOS
+"%JAVA_HOME%\bin\java" -Xmx512M -server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:G1IHOP=35 -cp "libs\*" kafka.Kafka config\server.properties
+(Keep this Command Prompt window open and running).
+
+Phase 2: Run the Spring Boot Producer Application
+Open a New Command Prompt and navigate to your Spring Boot Producer project root directory (e.g., C:\projects\kafka-producer).
+
+Build and Run the Producer using Maven:
+
+DOS
+mvn spring-boot:run
+Note: The producer application runs on port 8080 and is configured with spring.kafka.bootstrap-servers=localhost:9092.
+
+Phase 3: Run the Spring Boot Consumer Application
+Open another New Command Prompt and navigate to your Spring Boot Consumer project root directory (e.g., C:\projects\kafka-consumer).
+
+Build and Run the Consumer using Maven:
+
+DOS
+mvn spring-boot:run
+Note: The consumer application runs on port 8081 and listens continuously to the quickstart-events topic using the group ID my-kafka-group.
+
+Phase 4: Test the End-to-End Pipeline
+Open your web browser or use curl in a command prompt to trigger a message through your producer's REST endpoint:
+
+DOS
+curl "http://localhost:8080/publish?message=Hello_Kafka_Pipeline_Working!"
+(Alternatively, paste http://localhost:8080/publish?message=Hello_Kafka_Pipeline_Working! directly into your browser address bar).
+
+Verify the Consumer Console:
+Check the Command Prompt window where your Spring Boot Consumer is running. You will instantly see the log:
+
+Plaintext
+✅ Consumed message from Kafka: Hello_Kafka_Pipeline_Working!

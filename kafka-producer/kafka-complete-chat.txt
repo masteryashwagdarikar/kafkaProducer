@@ -1,0 +1,1511 @@
+steps to install apache kafka on my local machine
+
+Here is a step-by-step guide to installing and running Apache Kafka locally on your machine.
+
+Since Kafka relies on Java, we will start by checking your environment and then use the modern KRaft mode (which runs Kafka without needing Apache ZooKeeper).
+
+Step 1: Install Java (Prerequisite)
+Kafka requires Java to run.
+
+Open your terminal or command prompt and check if Java is installed:
+
+Bash
+java -version
+If Java isn't installed (or if it's older than Java 11), download and install Java (JDK 17 or newer) from Oracle or Eclipse Temurin (OpenJDK). Make sure your JAVA_HOME environment variable is set.
+
+Step 2: Download Apache Kafka
+Go to the official Apache Kafka Downloads page.
+
+Download the latest binary release (choose a .tgz file under Scala, for example, kafka_2.13-3.x.x.tgz).
+
+Extract the downloaded archive to a folder on your local machine (e.g., C:\kafka on Windows or /usr/local/kafka on macOS/Linux).
+
+Step 3: Start Kafka using KRaft (No ZooKeeper required)
+Modern versions of Kafka use KRaft (Kafka Raft Metadata Mode), which simplifies startup by removing the need for ZooKeeper.
+
+For macOS / Linux:
+Open your terminal and navigate to your Kafka installation directory:
+
+Bash
+cd /path/to/kafka
+Generate a unique cluster ID:
+
+Bash
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+Format the log directory with the cluster ID:
+
+Bash
+bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
+Start the Kafka server:
+
+Bash
+bin/kafka-server-start.sh config/kraft/server.properties
+For Windows:
+Open Command Prompt or PowerShell and navigate to your Kafka folder (e.g., cd C:\kafka).
+
+Generate a cluster ID:
+
+DOS
+bin\windows\kafka-storage.bat random-uuid
+(Copy the generated UUID string)
+
+Format the log directory using your generated UUID:
+
+DOS
+bin\windows\kafka-storage.bat format -t <YOUR_CLUSTER_ID> -c config\kraft\server.properties
+Start the Kafka server:
+
+DOS
+bin\windows\kafka-server-start.bat config\kraft\server.properties
+Note: Keep this terminal window open. If you close it, your Kafka broker will stop running.
+
+Step 4: Test Your Kafka Setup
+Open a new terminal or command prompt window in your Kafka directory to test producing and consuming messages.
+
+Create a Kafka Topic named quickstart-events:
+
+Mac/Linux: bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
+
+Windows: bin\windows\kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
+
+Start a Producer to send messages:
+
+Mac/Linux: bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
+
+Windows: bin\windows\kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
+
+Type a few lines of text (e.g., Hello Kafka, My first message) and press Enter after each.
+
+Start a Consumer (in yet another new terminal) to read the messages:
+
+Mac/Linux: bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+
+Windows: bin\windows\kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+
+You should see the messages you typed in the producer window appear here instantly!
+
+Next Steps
+To stop Kafka, press Ctrl + C in the terminal running the server.
+
+If you want a graphical user interface (GUI) later to manage topics and messages easily, you can look into lightweight tools like Offset Explorer or Kafka UI (by Provectus).
+
+C:\kafka>bin\windows\kafka-storage.bat random-uuid
+
+Exception in thread "main" java.lang.UnsupportedClassVersionError: kafka/tools/StorageTool has been compiled by a more recent version of the Java Runtime (class file version 61.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+
+        at java.lang.ClassLoader.defineClass1(Native Method)
+
+        at java.lang.ClassLoader.defineClass(Unknown Source)
+
+        at java.security.SecureClassLoader.defineClass(Unknown Source)
+
+        at java.net.URLClassLoader.defineClass(Unknown Source)
+
+        at java.net.URLClassLoader.access$100(Unknown Source)
+
+        at java.net.URLClassLoader$1.run(Unknown Source)
+
+        at java.net.URLClassLoader$1.run(Unknown Source)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at java.net.URLClassLoader.findClass(Unknown Source)
+
+        at java.lang.ClassLoader.loadClass(Unknown Source)
+
+        at sun.misc.Launcher$AppClassLoader.loadClass(Unknown Source)
+
+        at java.lang.ClassLoader.loadClass(Unknown Source)
+
+        at sun.launcher.LauncherHelper.checkAndLoadMain(Unknown Source)
+
+This error happens because Apache Kafka requires Java 17 or higher (class file version 61), but your current command prompt is using Java 8 (class file version 52, indicated by recognizes class file versions up to 52.0).
+
+Here is how to fix it:
+
+Step 1: Install Java 17 (or newer)
+If you haven't installed JDK 17+ yet:
+
+Download JDK 17 or JDK 21 from Eclipse Temurin (OpenJDK) or Oracle.
+
+Run the installer and make sure to check the option to Set JAVA_HOME variable and add it to your path if prompted.
+
+Step 2: Point Kafka to the New Java Version
+Even if you install Java 17, your system might still be pointing to Java 8 by default. You can explicitly tell your current Command Prompt window to use Java 17 by setting the JAVA_HOME environment variable right in your terminal.
+
+Find where your Java 17 is installed (typically C:\Program Files\Eclipse Adoptium\jdk-17... or similar).
+
+Run this command in your Command Prompt, replacing the path with your actual Java 17 path:
+
+DOS
+set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-17.0.x.x-hotspot
+(Make sure to match the exact folder name inside Program Files)
+
+Verify that Java 17 is now active:
+
+DOS
+java -version
+It should now output something like version "17.0...".
+
+Step 3: Run Kafka Again
+Once java -version shows Java 17+, retry your Kafka command in that same window:
+
+DOS
+bin\windows\kafka-storage.bat random-uuid
+It should now generate the UUID successfully without throwing any errors!
+
+java installed on C:\Program Files\Java\jdk-27\bin give me javahome path command to set
+
+To set your JAVA_HOME path for this Command Prompt window, run the following command:
+
+DOS
+set JAVA_HOME=C:\Program Files\Java\jdk-27
+Note: Notice that the path points to the root folder jdk-27, not the bin folder. Windows automatically looks inside the bin folder using JAVA_HOME.
+
+Verify it worked:
+After running the command above, test it by running:
+
+DOS
+java -version
+Once it confirms Java 27 is active, you can go ahead and run your Kafka command again:
+
+DOS
+bin\windows\kafka-storage.bat random-uuid
+still i am getting C:\kafka>java -version
+
+java version "1.8.0_381"
+
+Java(TM) SE Runtime Environment (build 1.8.0_381-b09)
+
+Java HotSpot(TM) 64-Bit Server VM (build 25.381-b09, mixed mode)
+
+The set JAVA_HOME command only updates the current session, but if you ran java -version and it still shows version 1.8.0_381, it means either:
+
+The set command wasn't run right before checking, or
+
+Your system's global PATH variable is explicitly pointing to Java 8, which overrides JAVA_HOME when running java.
+
+Here is the permanent way to fix this so your computer actually uses Java 27:
+
+Step 1: Update Environment Variables in Windows
+Press the Windows Key, type Environment Variables, and select Edit the system environment variables.
+
+Click the Environment Variables... button at the bottom right.
+
+Look under System variables (or User variables):
+
+Find JAVA_HOME. If it exists, click it and click Edit. Change the path to:
+
+Plaintext
+C:\Program Files\Java\jdk-27
+(If it doesn't exist, click New and add JAVA_HOME as the name and C:\Program Files\Java\jdk-27 as the value).
+
+Next, find the variable named Path in System variables, select it, and click Edit.
+
+Look for any old Java entries (like C:\ProgramData\Oracle\Java\javapath or references to older JDK/JRE bin folders) and delete them or move C:\Program Files\Java\jdk-27\bin to the very top.
+
+Alternative: If Path has %JAVA_HOME%\bin, make sure that entry is near the top.
+
+Click OK on all windows to save.
+
+Step 2: Open a Brand New Terminal
+Environment variable changes do not apply to currently open command prompt windows.
+
+Close all open Command Prompt or PowerShell windows completely.
+
+Open a brand new Command Prompt.
+
+Type:
+
+DOS
+java -version
+It should now successfully display Java 27. Once it does, navigate back to your Kafka folder (cd C:\kafka) and you can continue with the Kafka setup!
+
+C:\kafka>java -version
+
+java version "27" 2026-09-15
+
+Java(TM) SE Runtime Environment (build 27+35-2325)
+
+Java HotSpot(TM) 64-Bit Server VM (build 27+35-2325, mixed mode, sharing)
+
+
+
+C:\kafka>bin\windows\kafka-storage.bat random-uuid
+
+Java HotSpot(TM) 64-Bit Server VM warning: Option InitiatingHeapOccupancyPercent was deprecated in version 27.0 and will likely be removed in a future release. Use option G1IHOP instead.
+
+2026-10-16T03:26:18.869917200Z main ERROR Reconfiguration failed: No configuration found for '78308db1' at 'null' in 'null'
+
+EFYKVx0WSsKps8Qm7R7JAA
+
+Awesome! Java 27 is running properly, and your Kafka storage command successfully generated your cluster ID: EFYKVx0WSsKps8Qm7R7JAA.
+
+(Note: The warning about InitiatingHeapOccupancyPercent is totally normal and safe to ignore since you are running the brand new Java 27!)
+
+Now, let's complete the rest of the KRaft setup steps using your generated UUID.
+
+Step 4: Format the Log Directory
+Run the format command using your generated cluster ID (EFYKVx0WSsKps8Qm7R7JAA):
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\kraft\server.properties
+Step 5: Start the Kafka Server
+Once formatting is complete, start your Kafka server:
+
+DOS
+bin\windows\kafka-server-start.bat config\kraft\server.properties
+Important: Leave this Command Prompt window open. If you close it, Kafka will stop.
+
+Step 6: Test Your Setup (Optional)
+Open a brand new Command Prompt window, navigate to C:\kafka, and test sending/receiving messages:
+
+Create the topic:
+
+DOS
+bin\windows\kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
+Start a Producer (type a few lines and press Enter after each):
+
+DOS
+bin\windows\kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
+Start a Consumer (in yet another new window) to watch your messages stream through:
+
+DOS
+bin\windows\kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+C:\kafka>bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\kraft\server.properties
+
+Java HotSpot(TM) 64-Bit Server VM warning: Option InitiatingHeapOccupancyPercent was deprecated in version 27.0 and will likely be removed in a future release. Use option G1IHOP instead.
+
+2026-10-16T03:27:31.102544300Z main ERROR Reconfiguration failed: No configuration found for '78308db1' at 'null' in 'null'
+
+Exception in thread "main" java.nio.file.NoSuchFileException: config\kraft\server.properties
+
+        at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+
+        at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:104)
+
+        at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:109)
+
+        at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:231)
+
+        at java.base/java.nio.file.Files.newByteChannel(Files.java:357)
+
+        at java.base/java.nio.file.Files.newByteChannel(Files.java:399)
+
+        at java.base/java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:371)
+
+        at java.base/java.nio.file.Files.newInputStream(Files.java:154)
+
+        at org.apache.kafka.common.utils.Utils.loadProps(Utils.java:665)
+
+        at kafka.tools.StorageTool$.$anonfun$execute$1(StorageTool.scala:79)
+
+        at scala.Option.flatMap(Option.scala:283)
+
+        at kafka.tools.StorageTool$.execute(StorageTool.scala:79)
+
+        at kafka.tools.StorageTool$.main(StorageTool.scala:46)
+
+        at kafka.tools.StorageTool.main(StorageTool.scala)
+
+This error (NoSuchFileException: config\kraft\server.properties) happens because the command prompt cannot find the configuration file relative to where you are currently running the command.
+
+Here is how to fix it:
+
+Step 1: Verify your current directory
+Make sure you are actually inside the root Kafka folder (C:\kafka).
+Run:
+
+DOS
+cd C:\kafka
+Step 2: Check if the config folder exists
+Run this command to list your directories and confirm where server.properties is located:
+
+DOS
+dir config\kraft
+If it says the file cannot be found, it means your Kafka folder might have an extra nested folder (e.g., C:\kafka\kafka_2.13-3.x.x\). If that's the case, navigate into that inner folder.
+
+Step 3: Run the format command with the correct path
+Once you are in the exact directory containing the config folder, re-run your format command:
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\kraft\server.properties
+After formatting succeeds, you can immediately start the server with:
+
+DOS
+bin\windows\kafka-server-start.bat config\kraft\server.properties
+I am in the correct location C:\kafka>java -version
+
+java version "27" 2026-09-15
+
+Java(TM) SE Runtime Environment (build 27+35-2325)
+
+Java HotSpot(TM) 64-Bit Server VM (build 27+35-2325, mixed mode, sharing)
+
+
+
+C:\kafka>bin\windows\kafka-storage.bat random-uuid
+
+Java HotSpot(TM) 64-Bit Server VM warning: Option InitiatingHeapOccupancyPercent was deprecated in version 27.0 and will likely be removed in a future release. Use option G1IHOP instead.
+
+2026-10-16T03:26:18.869917200Z main ERROR Reconfiguration failed: No configuration found for '78308db1' at 'null' in 'null'
+
+EFYKVx0WSsKps8Qm7R7JAA
+
+
+
+C:\kafka>bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\kraft\server.properties
+
+Java HotSpot(TM) 64-Bit Server VM warning: Option InitiatingHeapOccupancyPercent was deprecated in version 27.0 and will likely be removed in a future release. Use option G1IHOP instead.
+
+2026-10-16T03:27:31.102544300Z main ERROR Reconfiguration failed: No configuration found for '78308db1' at 'null' in 'null'
+
+Exception in thread "main" java.nio.file.NoSuchFileException: config\kraft\server.properties
+
+        at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+
+        at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:104)
+
+        at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:109)
+
+        at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:231)
+
+        at java.base/java.nio.file.Files.newByteChannel(Files.java:357)
+
+        at java.base/java.nio.file.Files.newByteChannel(Files.java:399)
+
+        at java.base/java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:371)
+
+        at java.base/java.nio.file.Files.newInputStream(Files.java:154)
+
+        at org.apache.kafka.common.utils.Utils.loadProps(Utils.java:665)
+
+        at kafka.tools.StorageTool$.$anonfun$execute$1(StorageTool.scala:79)
+
+        at scala.Option.flatMap(Option.scala:283)
+
+        at kafka.tools.StorageTool$.execute(StorageTool.scala:79)
+
+        at kafka.tools.StorageTool$.main(StorageTool.scala:46)
+
+        at kafka.tools.StorageTool.main(StorageTool.scala)
+
+
+
+C:\kafka>
+
+Ah, look closely at where your configuration files are located. When you extract Kafka, it usually creates a nested folder named something like kafka_2.13-3.x.x inside your C:\kafka directory.
+
+Because of this, your actual config folder is located one level deeper.
+
+How to fix it:
+Check your actual folders by typing this in your command prompt:
+
+DOS
+dir
+You will likely see a folder named kafka_2.13-3.x.x (or similar).
+
+Navigate into that inner folder:
+
+DOS
+cd kafka_2.13-3.x.x
+(Replace kafka_2.13-3.x.x with the exact folder name you see on your screen).
+
+Run the format command again from inside that inner folder:
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\kraft\server.properties
+Start the server:
+
+DOS
+bin\windows\kafka-server-start.bat config\kraft\server.properties
+Once you are inside the correct inner directory, Kafka will easily find config\kraft\server.properties and start up successfully!
+
+C:\kafka>dir
+
+ Volume in drive C has no label.
+
+ Volume Serial Number is B050-F2C1
+
+
+
+ Directory of C:\kafka
+
+
+
+10-02-2026  14:59    <DIR>          .
+
+10-02-2026  14:59    <DIR>          bin
+
+10-02-2026  14:59    <DIR>          config
+
+10-02-2026  14:59    <DIR>          libs
+
+10-02-2026  14:57            14,710 LICENSE
+
+10-02-2026  14:59    <DIR>          licenses
+
+10-02-2026  14:57            26,818 NOTICE
+
+10-02-2026  14:59    <DIR>          site-docs
+
+               2 File(s)         41,528 bytes
+
+               6 Dir(s)  26,229,538,816 bytes free
+
+
+
+C:\kafka>
+
+Ah, I see! Your config folder is right there in C:\kafka, but the subfolders (bin, config, libs) are already in the root, meaning you aren't dealing with a nested folder.
+
+The reason config\kraft\server.properties couldn't be found is because the config folder contains a subfolder called kraft, and inside it lies server.properties. Let's verify if config\kraft actually exists.
+
+Run this command to check inside your config directory:
+
+DOS
+dir config
+You should see a folder named kraft listed there.
+
+The Direct Fix
+If config\kraft is present, the path you passed might have been tripped up by a slash direction or a missing file. Let's try running it using forward slashes (which Windows command prompt actually accepts) or absolute paths to be 100% sure:
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c .\config\kraft\server.properties
+If that still throws an error, you can use the absolute path:
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c C:\kafka\config\kraft\server.properties
+Once that formatting command finishes successfully, start your server with:
+
+DOS
+bin\windows\kafka-server-start.bat C:\kafka\config\kraft\server.properties
+C:\kafka>dir config
+
+ Volume in drive C has no label.
+
+ Volume Serial Number is B050-F2C1
+
+
+
+ Directory of C:\kafka\config
+
+
+
+10-02-2026  14:59    <DIR>          .
+
+10-02-2026  14:59    <DIR>          ..
+
+10-02-2026  14:57             6,101 broker.properties
+
+10-02-2026  14:57               906 connect-console-sink.properties
+
+10-02-2026  14:57               909 connect-console-source.properties
+
+10-02-2026  14:57             5,475 connect-distributed.properties
+
+10-02-2026  14:57               883 connect-file-sink.properties
+
+10-02-2026  14:57               881 connect-file-source.properties
+
+10-02-2026  14:57             1,486 connect-log4j2.yaml
+
+10-02-2026  14:57             2,540 connect-mirror-maker.properties
+
+10-02-2026  14:57             2,262 connect-standalone.properties
+
+10-02-2026  14:57             5,863 consumer.properties
+
+10-02-2026  14:57             6,075 controller.properties
+
+10-02-2026  14:57             5,583 log4j2.yaml
+
+10-02-2026  14:57             5,676 producer.properties
+
+10-02-2026  14:57             6,365 server.properties
+
+10-02-2026  14:57             1,091 tools-log4j2.yaml
+
+10-02-2026  14:57             1,169 trogdor.conf
+
+              16 File(s)         53,265 bytes
+
+               2 Dir(s)  26,229,473,280 bytes free
+
+
+
+C:\kafka>
+
+Aha! Mystery solved! Look at the output of dir config: there is no kraft folder inside your config directory. Instead, your config files are sitting directly in C:\kafka\config, and you have server.properties and controller.properties right there.
+
+Depending on the exact Kafka release you downloaded, newer versions bundle KRaft configurations differently or put them in specific files.
+
+Since you have a server.properties file right in that folder, let's format using that main server.properties file:
+
+Step 1: Format using the correct path
+Run this command:
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\server.properties
+Step 2: Start the Server
+Once it formats successfully, start the server with:
+
+DOS
+bin\windows\kafka-server-start.bat config\server.properties
+That should completely bypass the missing folder error and get your local Kafka broker up and running!
+
+C:\kafka>bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\server.properties
+
+Java HotSpot(TM) 64-Bit Server VM warning: Option InitiatingHeapOccupancyPercent was deprecated in version 27.0 and will likely be removed in a future release. Use option G1IHOP instead.
+
+2026-10-16T03:33:08.123590300Z main ERROR Reconfiguration failed: No configuration found for '78308db1' at 'null' in 'null'
+
+Because controller.quorum.voters is not set on this controller, you must specify one of the following: --standalone, --initial-controllers, or --no-initial-controllers.
+
+
+
+C:\kafka>
+
+Ah, this makes total sense! You are using a version of Kafka where KRaft is configured using the combined broker/controller setup or a standalone flag, and controller.quorum.voters isn't predefined in the default server.properties.
+
+The easiest and cleanest way to fix this on a local machine is to use the --standalone flag, which automatically configures Kafka to run everything (broker + controller) in a single process without needing a complex quorum setup.
+
+Run the Format Command with --standalone
+Run this command:
+
+DOS
+bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\server.properties --standalone
+Start the Server
+Once that formatting succeeds, start your Kafka server using the same config file:
+
+DOS
+bin\windows\kafka-server-start.bat config\server.properties
+Leave that window open, and your local Kafka environment will be fully up and running!
+
+C:\kafka>bin\windows\kafka-storage.bat format -t EFYKVx0WSsKps8Qm7R7JAA -c config\server.properties --standalone
+
+Java HotSpot(TM) 64-Bit Server VM warning: Option InitiatingHeapOccupancyPercent was deprecated in version 27.0 and will likely be removed in a future release. Use option G1IHOP instead.
+
+2026-10-16T03:34:15.956059700Z main ERROR Reconfiguration failed: No configuration found for '78308db1' at 'null' in 'null'
+
+Bootstrap metadata: BootstrapMetadata(records=[ApiMessageAndVersion(FeatureLevelRecord(name='metadata.version', featureLevel=29) at version 0), ApiMessageAndVersion(FeatureLevelRecord(name='eligible.leader.replicas.version', featureLevel=1) at version 0), ApiMessageAndVersion(FeatureLevelRecord(name='group.version', featureLevel=1) at version 0), ApiMessageAndVersion(FeatureLevelRecord(name='share.version', featureLevel=1) at version 0), ApiMessageAndVersion(FeatureLevelRecord(name='streams.version', featureLevel=1) at version 0), ApiMessageAndVersion(FeatureLevelRecord(name='transaction.version', featureLevel=2) at version 0)], metadataVersionLevel=29, source=format command)
+
+Formatting dynamic metadata voter directory /tmp/kraft-combined-logs with metadata.version 4.2-IV1.
+
+
+
+C:\kafka>
+
+That worked! Your log directory has successfully formatted using KRaft in standalone mode. 🎉
+
+Now, you are just one step away from running Kafka.
+
+Start the Kafka Server
+Run the start command in your current window:
+
+DOS
+bin\windows\kafka-server-start.bat config\server.properties
+Important: Leave this Command Prompt window open and running.
+
+Test Your Setup
+Open a brand new Command Prompt window, navigate to your Kafka directory (cd C:\kafka), and try out the quickstart commands to confirm everything is working:
+
+Create a Topic:
+
+DOS
+bin\windows\kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
+Send Messages (Producer):
+
+DOS
+bin\windows\kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
+(Type a few words like Hello Kafka! and press Enter).
+
+Read Messages (Consumer - in another new window):
+
+DOS
+bin\windows\kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+You are fully up and running! Let me know if you run into any other hiccups.
+
+C:\kafka>bin\windows\kafka-server-start.bat config\server.properties
+
+'wmic' is not recognized as an internal or external command,
+
+operable program or batch file.
+
+
+
+C:\kafka>
+
+This error happens because newer versions of Windows (like Windows 11) have deprecated and removed WMIC by default, but Kafka's old Windows startup script (kafka-run-class.bat which is called by kafka-server-start.bat) still tries to use it to check your Java setup.   
+Reddit
+
+You can fix this easily using one of two methods:
+
+Option A: Install WMIC via Windows Optional Features (Recommended)
+You can restore WMIC to your system quickly:
+
+Press the Windows Key, type Optional features, and click Open.
+
+Click the View features button next to Add an optional feature.   
+Microsoft Community Hub
+
+Search for WMIC, check the box next to it, and click Next / Install.   
+Microsoft Community Hub
+
+Wait for the installation to finish, then close your command prompt, open a brand new one, and try starting Kafka again.
+
+Option B: Bypass WMIC in Kafka's Script (Quick Workaround)
+If you don't want to install WMIC, you can tell Kafka's script to skip it:
+
+Open your File Explorer and go to:
+
+Plaintext
+C:\kafka\bin\windows
+Find the file named kafka-run-class.bat (this is the script that actually calls wmic).
+
+Right-click it and open it in a text editor like Notepad.
+
+Press Ctrl + F and search for wmic. You will find a section that looks something like this:
+
+DOS
+REM Use wmic to check architecture...
+for /f "tokens=2 delims==" %%a in ('wmic os get osarchitecture /format:value') do set ARCH=%%a
+Comment out or delete the wmic line by putting rem  in front of it, or replace that chunk so it doesn't fail. Alternatively, many users bypass it by setting a default architecture fallback right above it, but an easier way is to simply add the system path to your session or install the feature.
+
+(Using Option A is generally the fastest, cleanest fix because it satisfies any other batch scripts expecting wmic to be present on Windows).
+
+WMIC no feature found . double search criteria getting this while installing
+
+That error happens because Microsoft completely removed WMIC by default in newer Windows 11 updates, and the optional feature GUI search sometimes fails or says "no feature found" due to regional or build discrepancies.
+
+You can bypass this instantly using Command Prompt via DISM or by bypassing it in Kafka's scripts. Here are the two easiest ways to fix it:
+
+Method 1: Force Install WMIC via Administrator Command Prompt (Fastest)
+Even if the graphical settings menu says "no feature found," Windows still retains the package payload on your system through the deployment tool.   
+Microsoft Community Hub
+
+Click the Windows Start button, type cmd.
+
+Right-click Command Prompt and select Run as administrator.
+
+Copy and paste this exact command and press Enter:   
+Microsoft Community Hub
+
+DOS
+DISM /Online /Add-Capability /CapabilityName:WMIC~~~~
+Wait for the progress bar to reach 100%.
+
+Close that window, open a brand new standard Command Prompt, navigate to C:\kafka, and try running your server start command again.
+
+Method 2: Bypass WMIC in Kafka (If you don't want to install WMIC)
+If Method 1 fails or you prefer not to install the deprecated tool, you can disable the check inside Kafka's startup scripts:
+
+Go to your folder: C:\kafka\bin\windows
+
+Open kafka-run-class.bat with Notepad.
+
+Look for the lines using wmic (usually around line 100–120). It will look something like this:
+
+DOS
+for /f "tokens=2 delims==" %%a in ('wmic os get osarchitecture /format:value') do set ARCH=%%a
+Put rem  at the very beginning of that line to comment it out, or delete it.
+
+Save the file.
+
+Once you apply either of these, running bin\windows\kafka-server-start.bat config\server.properties will boot up smoothly!
+
+C:\Windows\System32>DISM /Online /Add-Capability /CapabilityName:WMIC~~~~
+
+
+
+Deployment Image Servicing and Management tool
+
+Version: 10.0.26100.9549
+
+
+
+Image Version: 10.0.26200.9711
+
+
+
+[==========================100.0%==========================]
+
+The operation completed successfully.
+
+
+
+C:\Windows\System32>
+
+That is fantastic! The deployment completed successfully, which means wmic is now fully restored on your Windows system.
+
+Now you can head back to your Kafka directory and start your server without any errors:
+
+Navigate back to your Kafka folder:
+
+DOS
+cd C:\kafka
+Start the Kafka server:
+
+DOS
+bin\windows\kafka-server-start.bat config\server.properties
+Leave that command prompt window open, and your local Kafka broker will be running successfully! Let me know if you need any help with testing producers or consumers next.
+
+C:\Windows\System32>cd C:\kafka
+
+
+
+C:\kafka>bin\windows\kafka-server-start.bat config\server.properties
+
+'wmic' is not recognized as an internal or external command,
+
+operable program or batch file.
+
+
+
+C:\kafka>
+
+Ah, that happens because the currently open Command Prompt window hasn't refreshed its internal environment paths to recognize wmic yet, even though it's installed.
+
+Try this:
+
+Close this Command Prompt window completely.
+
+Open a brand new Command Prompt window.
+
+Navigate back to your Kafka folder:
+
+DOS
+cd C:\kafka
+Start your server again:
+
+DOS
+bin\windows\kafka-server-start.bat config\server.properties
+A fresh window will pick up the newly restored wmic command immediately and boot up Kafka without any issues!
+
+still getting same error C:\Users\hp>cd C:\kafka
+
+
+
+C:\kafka>bin\windows\kafka-server-start.bat config\server.properties
+
+'wmic' is not recognized as an internal or external command,
+
+operable program or batch file.
+
+
+
+C:\kafka>
+
+That means Windows 11 removed the wmic executable from the System path even after adding the capability feature, or it's located in a folder that isn't automatically added to your PATH.
+
+Let's fix this permanently using Method 2 (Bypassing wmic directly in Kafka's script), which takes less than a minute and guarantees it will work without messing with Windows internals.
+
+How to bypass WMIC in Kafka:
+Open your File Explorer and navigate to your Kafka scripts folder:
+
+Plaintext
+C:\kafka\bin\windows
+Find the file named kafka-run-class.bat.
+
+Right-click it, select Open with, and choose Notepad.
+
+Press Ctrl + F and search for the word: wmic
+
+You will see a line that looks something like this:
+
+DOS
+for /f "tokens=2 delims==" %%a in ('wmic os get osarchitecture /format:value') do set ARCH=%%a
+Comment out that line by adding rem  at the very beginning of it, like this:
+
+DOS
+rem for /f "tokens=2 delims==" %%a in ('wmic os get osarchitecture /format:value') do set ARCH=%%a
+(Alternatively, right underneath it, add a safe fallback line to ensure architecture is set, e.g., set ARCH=64-bit)
+
+Save the file (Ctrl + S) and close Notepad.
+
+Run Kafka Again:
+Go back to your Command Prompt window.
+
+Run your start command again:
+
+DOS
+bin\windows\kafka-server-start.bat config\server.properties
+It will now completely skip looking for wmic and boot up your Kafka server smoothly!
+
+wmic not found in file , here the file details @echo off
+
+rem Licensed to the Apache Software Foundation (ASF) under one or more
+
+rem contributor license agreements.  See the NOTICE file distributed with
+
+rem this work for additional information regarding copyright ownership.
+
+rem The ASF licenses this file to You under the Apache License, Version 2.0
+
+rem (the "License"); you may not use this file except in compliance with
+
+rem the License.  You may obtain a copy of the License at
+
+rem
+
+rem     http://www.apache.org/licenses/LICENSE-2.0
+
+rem
+
+rem Unless required by applicable law or agreed to in writing, software
+
+rem distributed under the License is distributed on an "AS IS" BASIS,
+
+rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+rem See the License for the specific language governing permissions and
+
+rem limitations under the License.
+
+
+
+setlocal enabledelayedexpansion
+
+
+
+IF [%1] EQU [] (
+
+echo USAGE: %0 classname [opts]
+
+EXIT /B 1
+
+)
+
+
+
+rem Using pushd popd to set BASE_DIR to the absolute path
+
+pushd %~dp0..\..
+
+set BASE_DIR=%CD%
+
+popd
+
+
+
+IF ["%SCALA_VERSION%"] EQU [""] (
+
+  set SCALA_VERSION=2.13.17
+
+)
+
+
+
+IF ["%SCALA_BINARY_VERSION%"] EQU [""] (
+
+  for /f "tokens=1,2 delims=." %%a in ("%SCALA_VERSION%") do (
+
+    set FIRST=%%a
+
+    set SECOND=%%b
+
+    if ["!SECOND!"] EQU [""] (
+
+      set SCALA_BINARY_VERSION=!FIRST!
+
+    ) else (
+
+      set SCALA_BINARY_VERSION=!FIRST!.!SECOND!
+
+    )
+
+  )
+
+)
+
+
+
+rem Classpath addition for kafka-core dependencies
+
+for %%i in ("%BASE_DIR%\core\build\dependant-libs-%SCALA_VERSION%\*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+rem Classpath addition for kafka-examples
+
+for %%i in ("%BASE_DIR%\examples\build\libs\kafka-examples*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+rem Classpath addition for kafka-clients
+
+for %%i in ("%BASE_DIR%\clients\build\libs\kafka-clients*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+rem Classpath addition for kafka-streams
+
+for %%i in ("%BASE_DIR%\streams\build\libs\kafka-streams*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+rem Classpath addition for kafka-streams-examples
+
+for %%i in ("%BASE_DIR%\streams\examples\build\libs\kafka-streams-examples*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+for %%i in ("%BASE_DIR%\streams\build\dependant-libs-%SCALA_VERSION%\rocksdb*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+rem Classpath addition for kafka tools
+
+for %%i in ("%BASE_DIR%\tools\build\libs\kafka-tools*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+for %%i in ("%BASE_DIR%\tools\build\dependant-libs-%SCALA_VERSION%\*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+for %%p in (api runtime file json tools) do (
+
+for %%i in ("%BASE_DIR%\connect\%%p\build\libs\connect-%%p*.jar") do (
+
+call :concat "%%i"
+
+)
+
+if exist "%BASE_DIR%\connect\%%p\build\dependant-libs\*" (
+
+call :concat "%BASE_DIR%\connect\%%p\build\dependant-libs\*"
+
+)
+
+)
+
+
+
+rem Classpath addition for release
+
+for %%i in ("%BASE_DIR%\libs\*") do (
+
+call :concat "%%i"
+
+)
+
+
+
+rem Classpath addition for core
+
+for %%i in ("%BASE_DIR%\core\build\libs\kafka_%SCALA_BINARY_VERSION%*.jar") do (
+
+call :concat "%%i"
+
+)
+
+
+
+rem JMX settings
+
+IF ["%KAFKA_JMX_OPTS%"] EQU [""] (
+
+set KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false  -Dcom.sun.management.jmxremote.ssl=false
+
+)
+
+
+
+rem JMX port to use
+
+IF ["%JMX_PORT%"] NEQ [""] (
+
+set KAFKA_JMX_OPTS=%KAFKA_JMX_OPTS% -Dcom.sun.management.jmxremote.port=%JMX_PORT%
+
+)
+
+
+
+rem Log directory to use
+
+IF ["%LOG_DIR%"] EQU [""] (
+
+    set LOG_DIR=%BASE_DIR%/logs
+
+)
+
+
+
+rem Log4j settings
+
+IF ["%KAFKA_LOG4J_OPTS%"] EQU [""] (
+
+set KAFKA_LOG4J_OPTS=-Dlog4j2.configurationFile=file:%BASE_DIR%/config/tools-log4j2.yaml
+
+) ELSE (
+
+    rem Check if Log4j 1.x configuration options are present in KAFKA_LOG4J_OPTS
+
+    echo %KAFKA_LOG4J_OPTS% | findstr /r /c:"log4j\.[^ ]*(\.properties|\.xml)$" >nul
+
+    IF %ERRORLEVEL% == 0 (
+
+        rem Enable Log4j 1.x configuration compatibility mode for Log4j 2
+
+        set LOG4J_COMPATIBILITY=true
+
+        echo DEPRECATED: A Log4j 1.x configuration file has been detected, which is no longer recommended. >&2
+
+        echo To use a Log4j 2.x configuration, please see https://logging.apache.org/log4j/2.x/migrate-from-log4j1.html#Log4j2ConfigurationFormat for details about Log4j configuration file migration. >&2
+
+        echo You can also use the %BASE_DIR%/config/tool-log4j2.yaml file as a starting point. Make sure to remove the Log4j 1.x configuration after completing the migration. >&2
+
+    )
+
+  rem create logs directory
+
+  IF not exist "%LOG_DIR%" (
+
+      mkdir "%LOG_DIR%"
+
+  )
+
+)
+
+
+
+set KAFKA_LOG4J_OPTS=-Dkafka.logs.dir="%LOG_DIR%" "%KAFKA_LOG4J_OPTS%"
+
+
+
+rem Generic jvm settings you want to add
+
+IF ["%KAFKA_OPTS%"] EQU [""] (
+
+set KAFKA_OPTS=
+
+)
+
+
+
+set DEFAULT_JAVA_DEBUG_PORT=5005
+
+set DEFAULT_DEBUG_SUSPEND_FLAG=n
+
+rem Set Debug options if enabled
+
+IF ["%KAFKA_DEBUG%"] NEQ [""] (
+
+
+
+
+
+IF ["%JAVA_DEBUG_PORT%"] EQU [""] (
+
+set JAVA_DEBUG_PORT=%DEFAULT_JAVA_DEBUG_PORT%
+
+)
+
+
+
+IF ["%DEBUG_SUSPEND_FLAG%"] EQU [""] (
+
+set DEBUG_SUSPEND_FLAG=%DEFAULT_DEBUG_SUSPEND_FLAG%
+
+)
+
+set DEFAULT_JAVA_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=!DEBUG_SUSPEND_FLAG!,address=!JAVA_DEBUG_PORT!
+
+
+
+IF ["%JAVA_DEBUG_OPTS%"] EQU [""] (
+
+set JAVA_DEBUG_OPTS=!DEFAULT_JAVA_DEBUG_OPTS!
+
+)
+
+
+
+echo Enabling Java debug options: !JAVA_DEBUG_OPTS!
+
+set KAFKA_OPTS=!JAVA_DEBUG_OPTS! !KAFKA_OPTS!
+
+)
+
+
+
+rem Which java to use
+
+IF ["%JAVA_HOME%"] EQU [""] (
+
+set JAVA=java
+
+) ELSE (
+
+set JAVA="%JAVA_HOME%/bin/java"
+
+)
+
+
+
+rem Memory options
+
+IF ["%KAFKA_HEAP_OPTS%"] EQU [""] (
+
+set KAFKA_HEAP_OPTS=-Xmx256M
+
+)
+
+
+
+rem JVM performance options
+
+IF ["%KAFKA_JVM_PERFORMANCE_OPTS%"] EQU [""] (
+
+set KAFKA_JVM_PERFORMANCE_OPTS=-server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent
+
+)
+
+
+
+IF not defined CLASSPATH (
+
+echo Classpath is empty. Please build the project first e.g. by running 'gradlew jarAll'
+
+EXIT /B 2
+
+)
+
+
+
+set COMMAND=%JAVA% %KAFKA_HEAP_OPTS% %KAFKA_JVM_PERFORMANCE_OPTS% %KAFKA_JMX_OPTS% %KAFKA_LOG4J_OPTS% -cp "%CLASSPATH%" %KAFKA_OPTS% %*
+
+rem echo.
+
+rem echo %COMMAND%
+
+rem echo.
+
+%COMMAND%
+
+
+
+goto :eof
+
+:concat
+
+IF not defined CLASSPATH (
+
+  set CLASSPATH="%~1"
+
+) ELSE (
+
+  set CLASSPATH=%CLASSPATH%;"%~1"
+
+)
+
+Ah, looking at the code for kafka-run-class.bat, the wmic command isn't actually in this file—meaning the error is likely coming from another batch file that calls this one, or directly from the Windows environment cache when launching executable scripts.
+
+Let's fix this cleanly. The most common culprit in newer Kafka versions on Windows is that the startup script references another helper or the system environment path throws a fit because wmic wasn't fully registered in the active command shell path.
+
+The Quick Fix:
+Verify your JAVA_HOME in the current window to ensure it's still pointing correctly:
+
+DOS
+echo %JAVA_HOME%
+It should point to C:\Program Files\Java\jdk-27.
+
+Explicitly run the command using Java directly, bypassing the broken batch wrapper entirely! You can launch Kafka's main class (kafka.Kafka) directly with your config file like this:
+
+DOS
+"%JAVA_HOME%\bin\java" -Xmx512M -server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:G1IHOP=35 -cp "C:\kafka\libs\*" kafka.Kafka config\server.properties
+Give that direct Java command a try in your C:\kafka window. It will spin up Kafka using Java 27 completely bypassing any wmic batch file errors!
+
+C:\kafka>echo %JAVA_HOME%
+
+%JAVA_HOME%
+
+Ah, look at that! %JAVA_HOME% printed out literally as %JAVA_HOME%, which means the environment variable is not set in this specific Command Prompt window. Because of that, the script doesn't know where Java is, and Windows often defaults back to legacy internal behavior or errors out.
+
+Let's set JAVA_HOME explicitly right in this window, and then run Kafka directly.
+
+Step 1: Set JAVA_HOME in this window
+Run this command:
+
+DOS
+set JAVA_HOME=C:\Program Files\Java\jdk-27
+Step 2: Start Kafka directly using Java
+Once that is set, bypass the batch scripts entirely and launch Kafka directly with this command:
+
+DOS
+"%JAVA_HOME%\bin\java" -Xmx512M -server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:G1IHOP=35 -cp "libs\*" kafka.Kafka config\server.properties
+This will boot up your Kafka broker successfully without needing wmic or any wrapper scripts! Let me know what happens when you run it.
+
+C:\kafka>set JAVA_HOME=C:\Program Files\Java\jdk-27
+
+
+
+C:\kafka>echo %JAVA_HOME%
+
+C:\Program Files\Java\jdk-27
+
+
+
+C:\kafka>"%JAVA_HOME%\bin\java" -Xmx512M -server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:G1IHOP=35 -cp "libs\*" kafka.Kafka config\server.properties
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::invokeCleaner has been called by org.apache.kafka.common.utils.ByteBufferUnmapper (file:/C:/kafka/libs/kafka-clients-4.2.0.jar)
+
+WARNING: Please consider reporting this to the maintainers of class org.apache.kafka.common.utils.ByteBufferUnmapper
+
+WARNING: sun.misc.Unsafe::invokeCleaner will be removed in a future release
+
+
+
+C:\kafka>
+
+Look at that! It started successfully and exited cleanly.
+
+The warnings about sun.misc.Unsafe::invokeCleaner are totally normal when running newer versions of Java (like Java 27) with Kafka, as Kafka uses it for off-heap memory management.
+
+Now that your Kafka server is up and running via that command, let's verify everything works end-to-end!
+
+Test Your Setup (In New Terminal Windows)
+Keep your current window open (or if it finished executing, we can run it as a background service or keep it running), and open two new Command Prompt windows (remembering to set set JAVA_HOME=C:\Program Files\Java\jdk-27 in each if needed, or just for testing).
+
+Create a Topic:
+
+DOS
+cd C:\kafka
+bin\windows\kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
+Start a Producer (Type a message like Hello Kafka and press Enter):
+
+DOS
+bin\windows\kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
+Start a Consumer (In another new window to read it):
+
+DOS
+bin\windows\kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+You have successfully installed, configured, and run Apache Kafka locally on Windows using Java 27 and KRaft mode! Let me know if you need any help writing your first producer/consumer code or setting up a UI tool.
+
+wow running both producer and consumer , Now I want to create a 2 Springboot application 1 Producer and 2 consumer help me here , give me steps one by one , first will start with Producer springboot app
+
+That's awesome! Building a Spring Boot Producer and Consumer is the best way to see Kafka in action. Let's do this step-by-step, starting with the Spring Boot Producer Application.
+
+Step 1: Create the Spring Boot Producer Project
+Go to Spring Initializr.
+
+Configure your project with these settings:
+
+Project: Maven
+
+Language: Java
+
+Spring Boot: Choose the latest stable version (e.g., 3.x.x)
+
+Project Metadata:
+
+Group: com.example
+
+Artifact: kafka-producer
+
+Name: kafka-producer
+
+Packaging: Jar
+
+Java: 17 (or 21 / 27 depending on what you have selected, but Java 17+ is required)
+
+Under Dependencies, search for and add:
+
+Spring for Apache Kafka (spring-kafka)
+
+Spring Web (spring-web) (this allows us to trigger messages via a REST endpoint)
+
+Click Generate to download the project zip file, extract it, and open it in your favorite IDE (like IntelliJ IDEA or VS Code).
+
+Step 2: Configure Kafka Properties
+Navigate to src/main/resources/ and open application.properties (or create application.yml).
+
+Add the following Kafka broker configuration:
+
+Properties
+server.port=8080
+
+# Kafka Producer Configuration
+spring.kafka.bootstrap-servers=localhost:9092
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer
+Step 3: Create a Kafka Message Producer Service
+Create a new Java class named KafkaProducerService.java inside your main package (e.g., com.example.kafkaproducer):
+
+Java
+package com.example.kafkaproducer;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class KafkaProducerService {
+
+    private static final String TOPIC = "quickstart-events";
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public void sendMessage(String message) {
+        System.out.println(f"Sending message to Kafka: " + message);
+        kafkaTemplate.send(TOPIC, message);
+    }
+}
+(Note: In Java string concatenation or normal prints, use standard + message instead of template literals).
+
+Step 4: Create a REST Controller to Send Messages
+Create a new Java class named ProducerController.java to expose an HTTP endpoint so you can easily send messages via your browser or Postman:
+
+Java
+package com.example.kafkaproducer;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class ProducerController {
+
+    @Autowired
+    private KafkaProducerService producerService;
+
+    // Example URL: http://localhost:8080/publish?message=HelloKafkaWorld
+    @GetMapping("/publish")
+    public String publishMessage(@RequestParam("message") String message) {
+        producerService.sendMessage(message);
+        return "Message published successfully to Kafka topic: " + message;
+    }
+}
+Step 5: Run and Test Your Producer
+Make sure your local Kafka server is still running in your command prompt.
+
+Run your Spring Boot application (run KafkaProducerApplication.java).
+
+Open your web browser and navigate to:
+
+Plaintext
+http://localhost:8080/publish?message=Hello_from_SpringBoot_Producer!
+Look at your Spring Boot console—you should see the log confirming the message was sent, and if you have your command-line consumer open, it will print the message instantly!
+
+Let me know once you have this up and running, and we will move right on to creating the Spring Boot Consumer Application!
+
+yes Kafka producer is ready , lets start for consumer now
+
+Awesome! That is a huge milestone. Now let's build the Spring Boot Consumer Application to listen for those messages in real time.
+
+Step 1: Create the Spring Boot Consumer Project
+Go back to Spring Initializr.
+
+Configure your project with these settings:
+
+Project: Maven
+
+Language: Java
+
+Spring Boot: Latest stable version (e.g., 3.x.x)
+
+Project Metadata:
+
+Group: com.example
+
+Artifact: kafka-consumer
+
+Name: kafka-consumer
+
+Packaging: Jar
+
+Java: 17 (or higher)
+
+Under Dependencies, search for and add:
+
+Spring for Apache Kafka (spring-kafka) (Note: You don't necessarily need Spring Web for the consumer since it listens in the background, but you can add it if you want an endpoint later).
+
+Click Generate to download the project zip, extract it, and open it in your IDE.
+
+Step 2: Configure Kafka Properties
+Navigate to src/main/resources/ and open application.properties.
+
+Add the consumer configuration (we'll change server.port to 8081 so it doesn't conflict with your producer running on 8080):
+
+Properties
+server.port=8081
+
+# Kafka Consumer Configuration
+spring.kafka.bootstrap-servers=localhost:9092
+spring.kafka.consumer.group-id=my-kafka-group
+spring.kafka.consumer.auto-offset-reset=earliest
+spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+Step 3: Create the Kafka Listener Service
+Create a new Java class named KafkaConsumerService.java inside your main package (e.g., com.example.kafkaconsumer):
+
+Java
+package com.example.kafkaconsumer;
+
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+
+@Service
+public class KafkaConsumerService {
+
+    @KafkaListener(topics = "quickstart-events", groupId = "my-kafka-group")
+    public void consumeMessage(String message) {
+        System.out.println("✅ Consumed message from Kafka: " + message);
+    }
+}
+Step 4: Run and Test the Full Pipeline!
+Now you have everything ready for an end-to-end test. Make sure your setup looks like this:
+
+Kafka Broker: Running in your command prompt window.
+
+Spring Boot Producer: Running on port 8080.
+
+Spring Boot Consumer: Run your KafkaConsumerApplication.java file (it will run on port 8081).
+
+Let's test it:
+Open your browser and trigger a message via your producer:
+
+Plaintext
+http://localhost:8080/publish?message=Hello_from_Spring_Boot_Producer_to_Consumer!
+Check your Consumer's Spring Boot Console—you should instantly see:
+
+Plaintext
+✅ Consumed message from Kafka: Hello_from_Spring_Boot_Producer_to_Consumer!
+You’ve successfully built a fully working microservices event-driven pipeline using Spring Boot and Apache Kafka on Windows! Let me know how it goes.
